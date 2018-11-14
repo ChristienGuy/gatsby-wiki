@@ -1,0 +1,13 @@
+# Project dependencies
+.cache
+node_modules
+yarn-error.log
+.envrc*
+!.envrc.example
+
+github-wiki-markdown-converted/
+wiki-files-git/
+
+# Build directory
+/public
+.DS_Store
