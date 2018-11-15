@@ -3,6 +3,9 @@ require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`,
 })
 
+const transformer = require('./build-utils/algoliaTransformer').transformer;
+
+
 const myQuery = `{
   allMarkdownRemark {
     edges {
@@ -18,33 +21,10 @@ const myQuery = `{
   }
 }`
 
-
-
 const queries = [
   {
     query: myQuery,
-    transformer: ({ data }) => {
-      const childrenAndSlugs = []
-
-      const findTextChildren = ({ element, slug }) => {
-        if(element.type === 'text' && element.value.trim() !== '') {
-          childrenAndSlugs.push({
-            text: element.value,
-            slug: slug
-          })
-        }
-
-        if (element.children != null) {
-          element.children.forEach(child => findTextChildren({ element: child, slug }))
-        }
-      }
-
-      data.allMarkdownRemark.edges.forEach(({ node }) => {
-        findTextChildren({ element: node.htmlAst, slug: node.fields.slug })
-      })
-
-      return childrenAndSlugs;
-    },
+    transformer: transformer,
   },
 ]
 
@@ -53,6 +33,7 @@ module.exports = {
     title: 'Github Wiki',
   },
   plugins: [
+    'gatsby-plugin-styled-components',
     'gatsby-plugin-react-helmet',
     {
       resolve: `gatsby-source-filesystem`,
@@ -71,7 +52,9 @@ module.exports = {
     {
       resolve: 'gatsby-transformer-remark',
       options: {
-        plugins: [],
+        plugins: [
+          'gatsby-remark-autolink-headers'
+        ],
       },
     },
     {
