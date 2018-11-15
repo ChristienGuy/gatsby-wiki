@@ -15,7 +15,6 @@ const transformer = ({ data }) => {
         text: value,
         slug: hTagSlug || slug
       });
-      hTagSlug = undefined;
     }
 
     if (element.children != null) {
